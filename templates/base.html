@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="description" content="Techkaj Store">
+  <meta name="keywords" content="tailwind,tailwindcss,tailwind css,css,starter template,free template,store template, shop layout, minimal, monochrome, minimalistic, theme, nordic">
+
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,400&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="bg-white text-gray-600 work-sans leading-normal text-base tracking-normal min-h-screen flex flex-col">
+
+  {% include 'Navbar.html' %}
+
+{% if messages %}
+  <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
+    {% for message in messages %}
+      <div class="flex items-center justify-between px-4 py-3 rounded-lg shadow-md text-sm
+                  {% if message.tags == 'success' %} bg-green-100 text-green-800
+                  {% elif message.tags == 'error' %} bg-red-100 text-red-800
+                  {% elif message.tags == 'warning' %} bg-yellow-100 text-yellow-800
+                  {% else %} bg-blue-100 text-blue-800 {% endif %} fade-message">
+        <span>{{ message }}</span>
+        <button class="ml-4 text-lg font-bold text-gray-700 hover:text-gray-900 close-btn">&times;</button>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Close buttons
+      document.querySelectorAll('.close-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          this.parentElement.remove();
+        });
+      });
+
+      // Auto hide after 5 seconds
+      setTimeout(function() {
+        document.querySelectorAll('.fade-message').forEach(function(msg) {
+          msg.remove();
+        });
+      }, 5000);
+    });
+  </script>
+{% endif %}
+
+
+  <!-- Main Content -->
+  <main class="flex-grow">
+    {% block body %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto bg-white py-8 border-t border-gray-400">
+    <div class="container mx-auto flex px-3 py-8">
+      <div class="w-full mx-auto flex flex-wrap">
+        <div class="flex w-full lg:w-1/2">
+          <div class="px-3 md:px-0">
+            <h3 class="font-bold text-gray-900">About</h3>
+            <p class="py-4">
+              Founded in 2023 by mdbaizidtanvir, Beta  has come a long way from its beginnings. When we first started out, our passion for eco-friendly clothing drove us to start our own business.
+            </p>
+          </div>
+        </div>
+        <div class="flex w-full lg:w-1/2 lg:justify-end lg:text-right mt-6 md:mt-0">
+          <div class="px-3 md:px-0">
+            <h3 class="text-left font-bold text-gray-900">Social</h3>
+            <div class="w-full flex items-center py-4 mt-0">
+              <!-- Social Icons -->
+              <a href="#" class="mx-2">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775..."></path>
+                </svg>
+              </a>
+              <a href="#" class="mx-2">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12..."></path>
+                </svg>
+              </a>
+              <a href="#" class="mx-2">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 0C8.74 0 8.333.015..."></path>
+                </svg>
+              </a>
+              <a href="#" class="mx-2">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M12.017 0C5.396 0 .029 5.367..."></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

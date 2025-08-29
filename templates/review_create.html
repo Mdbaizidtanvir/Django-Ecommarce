@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
+  <h2 class="text-xl font-bold mb-4">Write a Review for {{ product.name }}</h2>
+  
+  <form method="post">
+    {% csrf_token %}
+    
+    <label for="rating" class="block mb-2 font-semibold">Rating</label>
+    <select name="rating" id="rating" required class="w-full p-2 border rounded mb-4">
+      <option value="">--Select--</option>
+      {% for i in "12345" %}
+      <option value="{{ i }}">{{ i }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="comment" class="block mb-2 font-semibold">Comment</label>
+    <textarea name="comment" id="comment" rows="4" class="w-full p-2 border rounded mb-4" required></textarea>
+
+    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      Submit Review
+    </button>
+  </form>
+</div>
+{% endblock %}

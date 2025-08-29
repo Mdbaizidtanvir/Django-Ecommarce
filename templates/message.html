@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}My Messages{% endblock %}
+
+{% block body %}
+<section class="py-16 bg-gray-50 min-h-screen">
+  <div class="mx-auto max-w-4xl px-4 flex flex-col h-[80vh]">
+    
+    <!-- Header -->
+    <div class="py-4 px-6 bg-yellow-500 rounded-t-lg text-white font-bold text-xl shadow-md flex items-center justify-between">
+      <span>📩 My Messages</span>
+      <span class="text-sm font-medium opacity-80">Orders with chats</span>
+    </div>
+
+    <!-- Body -->
+    <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-white border border-yellow-200 rounded-b-lg shadow-inner">
+      {% if orders %}
+        {% for order in orders %}
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-50 border border-yellow-400 px-5 py-4 rounded-lg shadow hover:shadow-md hover:bg-yellow-50 transition-all duration-300 ease-in-out">
+            
+            <!-- Order Info -->
+            <div class="flex items-center space-x-3">
+              <div class="text-lg font-semibold text-gray-800">
+                Order #{{ order.id }}
+              </div>
+              {% if order.new_messages_count > 0 %}
+                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold animate-pulse">
+                  {{ order.new_messages_count }} New
+                </span>
+              {% endif %}
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row sm:space-x-3 mt-3 sm:mt-0">
+              
+              <!-- View Messages -->
+              <a href="{% url 'order_messages' order.id %}" 
+                 class="text-center text-sm font-medium text-white py-2 px-4 rounded-full bg-yellow-500 hover:bg-yellow-600 shadow transition">
+                 💬 View
+              </a>
+
+              <!-- Mark as Read -->
+              <form method="post" action="{% url 'mark_messages_read' order.id %}" class="mt-2 sm:mt-0">
+                {% csrf_token %}
+                <button 
+                  class="w-full sm:w-auto px-5 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                  data-order-id="{{ order.id }}">
+                  {% if order.new_messages_count > 0 %}
+                    Mark as Read
+                  {% else %}
+                    ✅ Read
+                  {% endif %}
+                </button>
+              </form>
+
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center text-gray-500 py-12">
+          No paid orders with messages yet.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

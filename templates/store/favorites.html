@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Favorites{% endblock %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto px-4 py-12">
+  <h1 class="text-2xl md:text-3xl font-bold mb-8 text-gray-800">❤️ Your Favorites</h1>
+
+  {% if favorites %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for fav in favorites %}
+    <div class="bg-white rounded-xl shadow hover:shadow-md transition p-5">
+  <a href="{% url 'product_detail' fav.product.id %}" class="block mb-3">
+    <!-- Product Image -->
+    <img src="{{ fav.product.main_image.url }}" alt="{{ fav.product.name }}" class="w-full h-48 object-cover rounded-md mb-4" />
+
+    <!-- Product Name -->
+    <h3 class="text-lg font-semibold text-gray-900 hover:underline">{{ fav.product.name }}</h3>
+  </a>
+
+  <!-- Price -->
+  <p class="text-sm text-gray-500 mb-3">Price: £{{ fav.product.price }}</p>
+
+  <!-- Remove Button -->
+  <a href="{% url 'remove_from_favorites' fav.product.id %}" class="inline-block text-sm text-red-500 hover:text-red-600 font-medium transition">
+    Remove from Favorites
+  </a>
+</div>
+
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-20">
+    <!-- Icon -->
+    <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5"
+         viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="M3 8.25C3 6.455 4.455 5 6.25 5c1.24 0 2.304.742 2.75 1.8A3.25 3.25 0 0112 5c1.385 0 2.566.885 3 2.123A3.25 3.25 0 0117.75 5 3.25 3.25 0 0121 8.25c0 3.75-6.5 7.75-9 9.5-2.5-1.75-9-5.75-9-9.5z" />
+    </svg>
+
+    <!-- Message -->
+    <h3 class="mt-6 text-lg font-semibold text-gray-700">No favorites yet</h3>
+    <p class="mt-2 text-gray-500 text-sm">Start browsing and add products you love to your favorites list.</p>
+
+    <!-- CTA Button -->
+    <a href="{% url 'store' %}" class="mt-6 inline-block px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-sm transition">
+      Browse Products
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+{% endblock %}
