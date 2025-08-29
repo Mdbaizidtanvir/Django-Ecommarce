@@ -56,15 +56,24 @@ INSTALLED_APPS = [
 
 ]
 
-
+import urllib.parse as urlparse
 
 ASGI_APPLICATION = "ecom.asgi.application"
 
+# ✅ Parse REDIS_URL properly
+# Get Redis URL from environment
+REDIS_URL = os.getenv("REDIS_URL")
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"  # ✅ No Redis needed
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            # Pass the full URL as a string
+            "hosts": [REDIS_URL],
+        },
+    },
 }
+
 
 
 

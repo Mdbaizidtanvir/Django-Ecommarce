@@ -38,9 +38,12 @@
 <script>
     const orderId = "{{ order.id }}";
     const userName = "{{ request.user.username }}";
+    
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
     const chatSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/order/' + orderId + '/'
+        protocol + '://' + window.location.host + '/ws/order/' + orderId + '/'
     );
+
 
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
