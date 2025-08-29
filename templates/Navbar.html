@@ -105,9 +105,9 @@
 </div>
 
       {% else %}
-      <div class=" md:flex space-x-3">
-        <a href="{% url 'login' %}" class="px-4 py-2 border border-gray-700 rounded-lg hover:bg-gray-800">Sign In</a>
-        <a href="{% url 'register' %}" class="px-4 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600">Sign Up</a>
+      <div class=" md:flex space-x-2 md:space-x-3">
+        <a href="{% url 'login' %}" class="md:px-4 px-2 py-1 text[10px] md:py-2 border border-gray-700 rounded-lg hover:bg-gray-800">Sign In</a>
+        <a href="{% url 'register' %}" class="md:px-4 py-1 px-2 md:py-2 text[10px]  bg-yellow-500 text-black rounded-lg hover:bg-yellow-600">Sign Up</a>
       </div>
       {% endif %}
     </div>

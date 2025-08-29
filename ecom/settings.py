@@ -22,7 +22,7 @@ load_dotenv()
 
 load_dotenv(dotenv_path=BASE_DIR / ".env")
 
-DEBUG = True
+DEBUG = False
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -30,8 +30,14 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+# settings.py
 
-ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://django-ecommarce.onrender.com",  
+]
+
+
+ALLOWED_HOSTS = ["https://django-ecommarce.onrender.com","*"]
 
 
 # Application definition
