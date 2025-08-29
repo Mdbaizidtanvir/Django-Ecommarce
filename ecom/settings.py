@@ -22,7 +22,7 @@ load_dotenv()
 
 load_dotenv(dotenv_path=BASE_DIR / ".env")
 
-DEBUG = False
+DEBUG = True
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
