@@ -3,8 +3,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
-from app.models import Order   # ✅ move here
-from messageapp.models import Message   
+ 
 
 User = get_user_model()
 
@@ -59,5 +58,7 @@ class OrderChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def create_message(self, user, text, is_admin):
+        from app.models import Order   # ✅ move here
+        from .models import Message  
         order = Order.objects.get(id=self.order_id)
         return Message.objects.create(order=order, sender=user, text=text, is_admin=is_admin)
