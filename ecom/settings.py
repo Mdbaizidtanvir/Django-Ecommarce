@@ -126,20 +126,17 @@ WSGI_APPLICATION = 'ecom.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-
-import dj_database_url
 from decouple import config
-import os
-
-DATABASE_URL = config("DATABASE_URL", default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}")
+import dj_database_url
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        DATABASE_URL,
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL'),
         conn_max_age=600,
-        ssl_require=DATABASE_URL.startswith("postgres://") or DATABASE_URL.startswith("postgresql://")
+        ssl_require=True
     )
 }
+
 
 
 
