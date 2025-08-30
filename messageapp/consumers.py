@@ -2,14 +2,15 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.contrib.auth import get_user_model
+from app.models import Order   # ✅ move here
+from messageapp.models import Message   
+
+User = get_user_model()
 
 class OrderChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        from django.contrib.auth import get_user_model
-        from app.models import Order
-        from .models import Message
-
-        User = get_user_model()
+    
 
         self.order_id = self.scope['url_route']['kwargs']['order_id']
         self.room_group_name = f'order_{self.order_id}'
