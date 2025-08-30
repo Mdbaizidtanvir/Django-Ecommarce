@@ -2,15 +2,10 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from django.contrib.auth import get_user_model
- 
 
-User = get_user_model()
 
 class OrderChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-    
-
         self.order_id = self.scope['url_route']['kwargs']['order_id']
         self.room_group_name = f'order_{self.order_id}'
 
@@ -29,13 +24,12 @@ class OrderChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    # Receive message from WebSocket
     async def receive(self, text_data):
         data = json.loads(text_data)
         message_text = data['message']
 
         user = self.scope['user']
-        is_admin = user.is_staff  # Admin check
+        is_admin = user.is_staff  # ✅ Check if sender is admin
 
         # Save message to DB
         message = await self.create_message(user, message_text, is_admin)
@@ -52,13 +46,13 @@ class OrderChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    # Receive message from room group
     async def chat_message(self, event):
+        # Send message to WebSocket
         await self.send(text_data=json.dumps(event))
 
     @database_sync_to_async
     def create_message(self, user, text, is_admin):
-        from app.models import Order   # ✅ move here
-        from .models import Message  
+        from app.models import Order   # ✅ Lazy import
+        from .models import Message    # ✅ Lazy import
         order = Order.objects.get(id=self.order_id)
         return Message.objects.create(order=order, sender=user, text=text, is_admin=is_admin)
