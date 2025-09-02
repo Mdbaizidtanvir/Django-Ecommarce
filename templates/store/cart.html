@@ -19,9 +19,9 @@
 
             <!-- Prices -->
   <div class="flex items-center gap-2 mt-1 flex-wrap">
-  <span class="text-lg font-bold text-black">${{ item.price|floatformat:2 }}</span>
+  <span class="text-lg font-bold text-black">৳{{ item.price|floatformat:2 }}</span>
   {% if item.original_price|floatformat:2 > item.price|floatformat:2 %}
-  <span class="line-through text-gray-400 text-sm">${{ item.original_price|floatformat:2 }}</span>
+  <span class="line-through text-gray-400 text-sm">৳{{ item.original_price|floatformat:2 }}</span>
   <span class="text-xs px-2 py-1 rounded bg-yellow-300 text-black font-semibold">-{{ item.offer }}%</span>
   {% endif %}
 </div>
@@ -61,15 +61,15 @@
       <h3 class="text-lg sm:text-xl font-semibold mb-4 text-yellow-600">Order Summary</h3>
       <div class="flex justify-between mb-2 text-sm sm:text-base">
         <span>Subtotal</span>
-        <span>${{ subtotal|floatformat:2 }}</span>
+        <span>৳{{ subtotal|floatformat:2 }}</span>
       </div>
       <div class="flex justify-between mb-2 text-sm sm:text-base">
         <span>Shiping Free</span>
-        <span>${{ tax|floatformat:2 }}</span>
+        <span>৳{{ tax|floatformat:2 }}</span>
       </div>
 <div class="flex justify-between font-semibold text-lg border-t pt-2">
   <span>Total</span>
-  <span>${{ total|floatformat:2 }}</span>
+  <span>৳{{ total|floatformat:2 }}</span>
 </div>
 
 <form method="post" action="{% url 'apply_discount_code' %}" class="flex gap-2 mt-4">

@@ -141,14 +141,14 @@
 
      <div class="flex items-center gap-2 mt-2">
       {% if product.discount_percentage %}
-        <span class="text-yellow-500 text-lg font-bold">${{ product.get_final_price|floatformat:2 }}</span>
-        <span class="line-through text-gray-400 text-lg">${{ product.price }}</span>
+        <span class="text-yellow-500 text-lg font-bold">৳{{ product.get_final_price|floatformat:2 }}</span>
+        <span class="line-through text-gray-400 text-lg">৳{{ product.price }}</span>
 
 
         <p class="text-lg py-1 px-2 rounded-md text-white bg-red-500">-{{product.discount_percentage}}%</p>
        
       {% else %}
-        <span class="text-yellow-500 text-lg font-bold">${{ product.price }}</span>
+        <span class="text-yellow-500 text-lg font-bold">৳{{ product.price }}</span>
       {% endif %}
     </div>
                         

@@ -22,7 +22,7 @@ load_dotenv()
 
 load_dotenv(dotenv_path=BASE_DIR / ".env")
 
-DEBUG = False
+DEBUG = True
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -53,12 +53,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 'froala_editor',
-    'app',
+    'app.apps.AppConfig',
           'cloudinary',
     'cloudinary_storage',
    'messageapp',
    'payment',
     "channels",
+    'ui_app',
 
 ]
 
@@ -108,6 +109,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "ui_app.context_processors.site_settings",
+
 
             ],
 
@@ -172,8 +175,13 @@ USE_TZ = True
 
 
 
-LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL="/"	
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SECURE = False   # (True if HTTPS)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 # Static files (CSS, JavaScript, etc.)
@@ -208,6 +216,18 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "tanvirislambaizid@gmail.com"   # sender Gmail
+EMAIL_HOST_PASSWORD = "yvyr kdol ndct wvcw"  # app password, not real Gmail password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
 
 
 JAZZMIN_SETTINGS = {
@@ -257,6 +277,7 @@ JAZZMIN_SETTINGS = {
 
         # Url that gets reversed (Permissions can be added)
         {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Message",  "url": "admin_orders_chat", "permissions": ["auth.view_user"]},
 
      
         # model admin to link to (Permissions checked against model)

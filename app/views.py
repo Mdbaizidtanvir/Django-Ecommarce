@@ -106,9 +106,21 @@ def store(request, slug=None):
 
     return render(request, "store/store.html", context)
 
+
+
+from ui_app.models import *
+
 @csrf_exempt
 def Home(request):
     products= Product.objects.all()
+    banner = Banner.objects.last()  # latest created
+
+
+    campaigns = Campaign.objects.filter(
+        is_active=True,
+        start_date__lte=timezone.now(),
+        end_date__gte=timezone.now()
+    )
 
     favorite_ids = []
     if request.user.is_authenticated:
@@ -123,7 +135,9 @@ def Home(request):
         "products":products,
                 'favorite_ids': favorite_ids,
 "categories":categories,
-        "deals_of_the_days": deals_of_the_days
+        "deals_of_the_days": deals_of_the_days,
+                "banner": banner,
+"campaigns": campaigns
 
     }
     return render(request,'store/Home.html',context)

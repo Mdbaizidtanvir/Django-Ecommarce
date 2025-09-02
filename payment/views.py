@@ -56,6 +56,7 @@ from django.contrib import messages
 
 
 
+import uuid
 
 @login_required
 def create_checkout_session(request):
@@ -63,7 +64,7 @@ def create_checkout_session(request):
     items = dict(cart.get_items())
     checkout_info = request.session.get('checkout_info', {})
 
-    # ✅ Create Order first
+    # Create order
     order = Order.objects.create(
         user=request.user,
         email=checkout_info.get('email', ''),
@@ -73,7 +74,7 @@ def create_checkout_session(request):
         payment_staus='pending',
     )
 
-    # ✅ Save order items
+    # Save order items
     for product_id, item in items.items():
         product = Product.objects.get(id=product_id)
         OrderItem.objects.create(
@@ -83,32 +84,33 @@ def create_checkout_session(request):
             price=item['offer']
         )
 
-
-    shipping_fee = 150  # amount in BDT, update as needed
-
-    # ✅ Save Payment Intent/Session ID
+    # ✅ Generate and store secure token for this order
+    token = uuid.uuid4().hex
+    order.success_token = token
     order.save()
-    
-    name = request.user.username
-    amount = shipping_fee
-    
-    return redirect(sslcommerz_payment_gateway(request, name, amount,order.id))
+
+    shipping_fee = 150  
+
+    return redirect(sslcommerz_payment_gateway(request, request.user.username, shipping_fee, order.id, token))
 
 
+from django.http import HttpResponseForbidden
 
 @csrf_exempt
 @login_required
 def checkout_success(request, order_id):
+    token = request.GET.get("token")
     try:
-        order = Order.objects.get(id=order_id, user=request.user)
-        order.payment_staus = 'paid'
-        order.status = 'pending'
-        order.save()
-        Cart(request).clear()
+        order = Order.objects.get(id=order_id)
     except Order.DoesNotExist:
-        messages.error(request, "Order not found.")
-    return render(request, 'store/checkout_success.html')
+        return HttpResponseForbidden("Invalid order or token")
 
+    order.payment_staus = 'paid'
+    order.status = 'pending'
+    order.save()
+    Cart(request).clear()
+
+    return render(request, 'store/checkout_success.html', {"order": order})
 
 
 @csrf_exempt

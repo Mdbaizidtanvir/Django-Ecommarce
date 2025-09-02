@@ -28,8 +28,8 @@ def generator_trangection_id( size=6, chars=string.ascii_uppercase + string.digi
 
     
 
-def sslcommerz_payment_gateway(request, name, amount,id):
- 
+def sslcommerz_payment_gateway(request, name, amount,id,token):
+
     
     cradentials = {'store_id':'techk68ad6d2c28c8b',
             'store_pass':"techk68ad6d2c28c8b@ssl", 'issandbox': True} 
@@ -39,7 +39,7 @@ def sslcommerz_payment_gateway(request, name, amount,id):
     body['total_amount'] = amount
     body['currency'] = "BDT"
     body['tran_id'] = generator_trangection_id()
-    body['success_url'] = f'{SUCCESS_URL}{id}/'
+    body['success_url'] = f'{SUCCESS_URL}{id}/?token={token}'
     body['fail_url'] = f'{FAIL_URL}'
     body['cancel_url'] = f'{CANCEL_URL}'
     body['emi_option'] = 0

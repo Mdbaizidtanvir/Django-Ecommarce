@@ -152,7 +152,7 @@
               </a>
             {% endif %}
           </div>
-          <p class="font-bold text-yellow-600">${{ item.price }}</p>
+          <p class="font-bold text-yellow-600">TK{{ item.price }}</p>
         </div>
         {% endfor %}
       </div>
@@ -166,7 +166,7 @@
           {% endif %}
         </p>
         <p class="text-lg font-extrabold text-gray-800">
-          Total: <span class="text-yellow-600">${{ order.total_price }}</span>
+          Total: <span class="text-yellow-600">TK{{ order.total_price }}</span>
         </p>
       </div>
     </div>

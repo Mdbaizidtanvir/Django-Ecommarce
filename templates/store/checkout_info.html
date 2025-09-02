@@ -86,7 +86,7 @@
               <span class="text-gray-700 text-sm truncate">{{ item.name }}</span>
             </div>
             <span class="font-semibold text-black">
-              ${{ item.price|floatformat:2 }} x {{ item.quantity }}
+              TK{{ item.price|floatformat:2 }} x {{ item.quantity }}
             </span>
           </div>
         {% endfor %}
@@ -94,19 +94,19 @@
         <div class="border-t mt-4 pt-2">
           <div class="flex justify-between mb-2 text-gray-700">
             <span>Subtotal</span>
-            <span>${{ subtotal|floatformat:2 }}</span>
+            <span>TK{{ subtotal|floatformat:2 }}</span>
           </div>
           <div class="flex justify-between mb-2 text-gray-700">
             <span>Tax</span>
-            <span>${{ tax|floatformat:2 }}</span>
+            <span>TK{{ tax|floatformat:2 }}</span>
           </div>
           <div class="flex justify-between mb-2 text-gray-700">
             <span>Shipping Fee</span>
-            <span class="text-yellow-600 font-medium">${{ shipping_fee|default:"2.00" }}</span>
+            <span class="text-yellow-600 font-medium">TK{{ shipping_fee|default:"2.00" }}</span>
           </div>
           <div class="flex justify-between font-bold text-lg mt-2 border-t pt-2">
             <span>Total</span>
-            <span>${{ total|floatformat:2 }}</span>
+            <span>TK{{ total|floatformat:2 }}</span>
           </div>
         </div>
 

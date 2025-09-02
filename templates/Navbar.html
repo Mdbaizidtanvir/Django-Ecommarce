@@ -7,12 +7,12 @@
       Please call us to check the stock before placing the order!
     </p>
     <div class="flex flex-wrap items-center space-x-4 text-gray-900">
-      <span>Call: 01321284815</span>
-      <a href="https://www.facebook.com/techkaj/" target="_blank" rel="nofollow noopener" class="hover:underline">
+      <span>Call: {{ settings.phone }}</span>
+      <a href="{{ settings.facebook }}" target="_blank" rel="nofollow noopener" class="hover:underline">
         FB Page
       </a>
-      <a href="https://www.facebook.com/groups/techkaj/" target="_blank" rel="nofollow noopener" class="hover:underline">
-        FB Group
+      <a href="{{ settings.wahtsapp }}" target="_blank" rel="nofollow noopener" class="hover:underline">
+        WhatsApp
       </a>
     </div>
   </div>
@@ -22,7 +22,7 @@
     
     <!-- Logo -->
     <a href="/" class="flex items-center space-x-2">
-      <img src="https://techkaj.com/_next/image?url=%2Fimages%2Flogo-dark.png&w=256&q=75" alt="logo" class="w-auto h-10">
+      <img src="{{ settings.get_logo }}" alt="{{ settings.site_name }}" class="w-auto h-10">
     </a>
 
     <!-- Search bar -->
