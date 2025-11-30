@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Order Placed{% endblock %}
+{% block body %}
+<div class="max-w-lg mx-auto text-center mt-10">
+    <h2 class="text-2xl font-bold text-green-600">✅ Payment Successful!</h2>
+    <p class="mt-2">Thank you! Your order has been placed.</p>
+    <a href="{% url 'orders' %}" class="mt-4 inline-block bg-yellow-500 text-white px-4 py-2 rounded">Return to Order</a>
+</div>
+
+
+<br/>
+{% endblock %}

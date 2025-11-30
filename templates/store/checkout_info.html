@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Checkout Info{% endblock %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto mt-10 p-4 md:p-6">
+  <h2 class="text-3xl font-bold mb-6 text-center">Checkout Details 🛒</h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- Checkout Form -->
+    <div class="bg-white p-6 rounded-2xl shadow-md">
+      <h3 class="text-xl font-semibold mb-4">Billing Details</h3>
+      <form action="{% url 'checkout_info' %}" method="POST" class="space-y-4">
+        {% csrf_token %}
+
+        <input type="email" name="email" placeholder="Email" required
+               class="w-full border border-yellow-400 px-4 py-2 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none" />
+
+        <input type="text" name="phone" placeholder="Phone Number" required
+               class="w-full border border-yellow-400 px-4 py-2 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none" />
+
+        <textarea name="address" placeholder="Shipping Address" required
+                  class="w-full border border-yellow-400 px-4 py-2 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none"></textarea>
+
+        <input type="text" name="zip_code" placeholder="ZIP Code" required
+               class="w-full border border-yellow-400 px-4 py-2 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:outline-none" />
+
+        <!-- Terms & Conditions -->
+        <label class="flex items-center gap-2 mt-4">
+          <input type="checkbox" name="terms" required class="accent-yellow-500">
+          <span class="text-sm text-gray-700">I agree to the <a href="#" class="text-yellow-500 underline">terms & conditions</a></span>
+        </label>
+
+        <!-- Delivery Method -->
+        <div class="mt-4">
+          <h4 class="font-semibold mb-2">Delivery Method</h4>
+          <div class="flex items-start gap-2">
+            <input type="radio" name="delivery" value="cod" checked class="accent-yellow-500 mt-1">
+            <div>
+              <p class="text-gray-700 font-medium">Cash on Delivery 💵 Trusted & Secure</p>
+              <p class="text-xs text-gray-500">⚠️ To confirm your COD order, you must first pay the <span class="font-semibold text-yellow-600">shipping fee</span>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Fee Payment Options -->
+        <div class="mt-6">
+          <h4 class="font-semibold mb-2">Pay Shipping Fee</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- bKash -->
+          
+            <!-- Nagad -->
+            <button type="button" class="flex flex-col items-center justify-center border border-yellow-400 rounded-lg py-3 hover:bg-yellow-50">
+              <img src="https://nagad.com.bd/_nuxt/img/new-logo.14fe8a5.png" alt="Nagad" class="h-8 mb-2">
+              <span class="text-sm font-medium">Nagad</span>
+            </button>
+
+            <!-- Stripe Card -->
+            <button type="button" class="flex flex-col items-center justify-center border border-yellow-400 rounded-lg py-3 hover:bg-yellow-50">
+              <img src="https://cdn-icons-png.flaticon.com/512/8983/8983163.png" alt="Card" class="h-8 mb-2">
+              <span class="text-sm font-medium">Card (Stripe)</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit"
+                class="w-full mt-6 bg-yellow-500 text-black py-3 rounded-2xl font-bold hover:bg-yellow-600 transition">
+          Place Order
+        </button>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="bg-gray-50 p-6 rounded-2xl shadow-md h-fit">
+      <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+
+      {% if cart_items %}
+        {% for product_id, item in cart_items %}
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center gap-3">
+              <img src="{{ item.image }}" alt="{{ item.name }}" class="w-14 h-14 object-cover rounded-lg">
+              <span class="text-gray-700 text-sm truncate">{{ item.name }}</span>
+            </div>
+            <span class="font-semibold text-black">
+              TK{{ item.price|floatformat:2 }} x {{ item.quantity }}
+            </span>
+          </div>
+        {% endfor %}
+
+        <div class="border-t mt-4 pt-2">
+          <div class="flex justify-between mb-2 text-gray-700">
+            <span>Subtotal</span>
+            <span>TK{{ subtotal|floatformat:2 }}</span>
+          </div>
+          <div class="flex justify-between mb-2 text-gray-700">
+            <span>Tax</span>
+            <span>TK{{ tax|floatformat:2 }}</span>
+          </div>
+          <div class="flex justify-between mb-2 text-gray-700">
+            <span>Shipping Fee</span>
+            <span class="text-yellow-600 font-medium">TK{{ shipping_fee|default:"2.00" }}</span>
+          </div>
+          <div class="flex justify-between font-bold text-lg mt-2 border-t pt-2">
+            <span>Total</span>
+            <span>TK{{ total|floatformat:2 }}</span>
+          </div>
+        </div>
+
+        <!-- Discount code -->
+        <form method="post" action="{% url 'apply_discount_code' %}" class="flex gap-2 mt-4">
+          {% csrf_token %}
+          <input type="text" name="discount_code" placeholder="Enter discount code" 
+                 class="flex-1 border border-gray-300 rounded-lg px-3 py-2">
+          <button type="submit" class="bg-yellow-500 text-black px-4 py-2 rounded-lg hover:bg-yellow-600">
+            Apply
+          </button>
+        </form>
+      {% else %}
+        <p class="text-gray-600">Your cart is empty.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

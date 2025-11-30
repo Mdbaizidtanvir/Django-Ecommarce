@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+
+<title>
+    {% block title %}
+    {{product.name}}
+    {% endblock %}
+</title>
+
+
+
+
+{% block body %}
+<!-- Include Swiper CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+/>
+
+
+<!-- Include Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+  <script defer>
+    function showTab(tabId) {
+      // Hide all sections
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      // Remove active style
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('bg-yellow-400','text-black'));
+      // Show the selected one
+      document.getElementById(tabId).classList.remove('hidden');
+      // Highlight active button
+      document.querySelector(`[data-tab='${tabId}']`).classList.add('bg-yellow-400','text-black');
+    }
+  </script>
+
+
+                                                <section class="relative container mx-auto mt-20 ">
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-0">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mx-auto max-md:px-2 ">
+                <div class="img">
+                    <div class="img-box h-full max-lg:mx-auto ">
+
+                      
+   <div class="swiper w-full  rounded-lg overflow-hidden">
+        <!-- Slides -->
+        <div class="swiper-wrapper">
+          <div class="swiper-slide " >
+<img src="{{product.main_image.url}}"/>
+
+          </div>
+    {% for image in product.images.all %}
+       <div class="swiper-slide " >
+<img src="{{image.image.url}}"/>
+
+          </div>
+    {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- Navigation buttons -->
+        <div class="swiper-button-prev text-white"></div>
+        <div class="swiper-button-next text-white"></div>
+      </div>
+
+
+<!-- Initialize Swiper -->
+<script>
+  const swiper = new Swiper('.swiper', {
+    // Optional parameters
+    loop: true,
+    speed: 800,
+    autoplay: {
+      delay: 4000,
+      disableOnInteraction: false,
+    },
+
+    // If we need pagination
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+    // Scrollbar
+    scrollbar: {
+      el: '.swiper-scrollbar',
+      draggable: true,
+    },
+  });
+</script>
+
+
+
+
+                    </div>
+
+                    
+                                 
+
+
+                </div>
+                <div
+                    class="data w-full lg:pr-8 pr-0 xl:justify-start justify-center flex items-center max-lg:pb-10 xl:my-2 lg:my-5 my-0">
+                    <div class="data w-full max-w-xl">
+                        <p class="text-lg font-medium leading-8 text-indigo-600 mb-4">Tech&nbsp; /&nbsp; {{product.category}}
+                        </p>
+                        <h2 class="font-manrope font-bold text-2xl leading-10 text-gray-900 mb-2 capitalize">
+                           {{product.name}}</h2>
+                   
+                        <p class="text-gray-500 text-base font-normal mt-1 mb-5">
+                          {{product.description}}
+                        </p>
+                   
+                
+
+                        <p class="mb-3">SKU: {{product.product_id}}</p>
+    <div class="flex space-x-2">
+{% if product.sizes %}
+
+      <div class="bg-yellow-500 text-white text-sm px-2 py-1 rounded-full">Size : {{product.sizes}}</div>
+      {% endif %}
+{% if product.colors %}
+
+      <div class="bg-red-500  text-white text-sm px-2 py-1 rounded-full">colors : {{product.colors}}</div>
+      {% endif %}
+
+{% if product.warranty_months %}
+
+      <div class="bg-black text-white text-sm px-2 py-1 rounded-full">Warranty : {{product.warranty_months}}</div>
+      {% endif %}
+
+    </div>              
+                        
+
+     <div class="flex items-center gap-2 mt-2">
+      {% if product.discount_percentage %}
+        <span class="text-yellow-500 text-lg font-bold">৳{{ product.get_final_price|floatformat:2 }}</span>
+        <span class="line-through text-gray-400 text-lg">৳{{ product.price }}</span>
+
+
+        <p class="text-lg py-1 px-2 rounded-md text-white bg-red-500">-{{product.discount_percentage}}%</p>
+       
+      {% else %}
+        <span class="text-yellow-500 text-lg font-bold">৳{{ product.price }}</span>
+      {% endif %}
+    </div>
+                        
+                    
+                                
+
+                        <div class="grid  py-8">
+                  
+<form action="{% url 'add_to_cart' product.pk %}" method="post">
+  {% csrf_token %}
+
+                            <button type="submit"
+                                class=" py-3 px-5 rounded-full bg-yellow-500 text-sm w-full flex items-center justify-center gap-2 transition-all duration-500 text-white uppercase">
+                              
+                                Add to cart</button>
+</form>
+
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+
+
+  <div class=" w-full p-6">
+    <!-- Navigation Tabs -->
+    <div class="flex space-x-3 mb-6">
+      <button data-tab="details" onclick="showTab('details')" class="tab-btn px-4 py-2 rounded-xl bg-gray-200 hover:bg-yellow-300 transition">Details</button>
+      <button data-tab="reviews" onclick="showTab('reviews')" class="tab-btn px-4 py-2 rounded-xl bg-gray-200 hover:bg-yellow-300 transition">Reviews</button>
+      <button data-tab="info" onclick="showTab('info')" class="tab-btn px-4 py-2 rounded-xl bg-gray-200 hover:bg-yellow-300 transition">Info</button>
+    </div>
+
+    <!-- Details Section -->
+    <div id="details" class="tab-content">
+ 
+      {{product.description_long | safe }}
+    </div>
+
+    <!-- Reviews Section -->
+    <div id="reviews" class="tab-content hidden">
+      <h2 class="text-xl font-bold text-gray-800 mb-2">Customer Reviews</h2>
+
+
+  {% if avg_rating %}
+    <p class="text-yellow-500 mb-4 font-semibold">
+      ⭐ Average Rating: {{ avg_rating }}/5
+    </p>
+  {% else %}
+    <p>No reviews yet.</p>
+  {% endif %}
+
+
+
+
+       {% if reviews %}
+    <div class="space-y-6">
+      {% for review in reviews %}
+        <div class="bg-white shadow-md rounded-2xl p-6">
+          <!-- Reviewer info -->
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-lg">{{ review.user.username }}</h3>
+            <span class="text-gray-500 text-sm">{{ review.created_at|date:"M d, Y" }}</span>
+          </div>
+
+          <!-- Rating stars -->
+          <div class="flex items-center mb-2">
+            {% for i in "12345" %}
+              {% if forloop.counter <= review.rating %}
+                <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.965c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.785.57-1.84-.196-1.54-1.118l1.287-3.965a1 1 0 00-.364-1.118L2.196 9.393c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.966z"/>
+                </svg>
+              {% else %}
+                <svg class="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.965c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.785.57-1.84-.196-1.54-1.118l1.287-3.965a1 1 0 00-.364-1.118L2.196 9.393c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.966z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <!-- Review content -->
+          <p class="text-gray-700">{{ review.comment }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-gray-500">No reviews yet. Be the first to review!</p>
+  {% endif %}
+
+    </div>
+
+    <!-- Info Section -->
+    <div id="info" class="tab-content hidden">
+      <h2 class="text-xl font-bold text-gray-800 mb-2">Additional Information</h2>
+      <ul class="list-disc list-inside text-gray-600">
+        <li>Sku : {{product.product_id}}</li>
+        <li>Size :{{product.sizes}}</li>
+        <li>Color :{{product.colors}}</li>
+        <li>Warranty : {{product.warranty_months}}</li>
+        <li>Brand : {{product.brand}}</li>
+        <li>model number : {{product.model_number}}</li>
+
+
+      </ul>
+
+
+    </div>
+  </div>
+
+  <script>
+    // Default: show details first
+    showTab('details');
+  </script>
+
+
+
+        </div>
+    </section>
+                                            
+
+
+<section class="container mx-auto  px-4 bg-gray-50 mt-10">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">You may also like</h2>
+
+    <div class=" mx-auto flex items-center flex-wrap pt-4 pb-12">
+
+  
+
+      
+{% for product in related_products %}
+<div class="w-full md:w-1/3 xl:w-1/4 p-4 flex flex-col">
+  <a href="{% url 'product_detail' product.slug %}">
+    <div class="relative group rounded-xl shadow-md overflow-hidden bg-white">
+
+      <!-- Product image -->
+      {% if product.main_image %}
+      <img class="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105" 
+           src="{{ product.main_image.url }}" alt="{{ product.name }}">
+
+      <!-- Discount Badge -->
+      {% if product.discount_percentage %}
+      <div class="absolute top-2 right-2 py-1 px-2 text-xs font-bold text-white bg-red-500 rounded-lg shadow">
+        -{{ product.discount_percentage }}%
+      </div>
+      {% endif %}
+
+      <!-- Overlay Actions -->
+      <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition duration-300 flex items-end justify-center">
+        <div class="flex items-start justify-center space-x-3 py-3  bg-white w-full ">
+          <!-- View Icon -->
+          <a href="{% url 'product_detail' product.slug %}">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="w-10 h-10 text-white bg-yellow-500 p-2 rounded-full shadow cursor-pointer hover:scale-110 transition" 
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </a>
+
+          <!-- Favorite Icon -->
+          {% if user.is_authenticated %}
+            {% if product.id in favorite_ids %}
+              <a href="{% url 'remove_from_favorites' product.id %}">
+                <svg class="w-10 h-10 text-yellow-500 bg-red-500 p-2 rounded-full shadow cursor-pointer hover:scale-110 transition" 
+                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 
+                           5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 
+                           4.5 2.09C13.09 3.81 14.76 3 16.5 
+                           3 19.58 3 22 5.42 22 8.5c0 
+                           3.78-3.4 6.86-8.55 11.54L12 
+                           21.35z"/>
+                </svg>
+              </a>
+            {% else %}
+              <a href="{% url 'add_to_favorites' product.id %}">
+                <svg class="w-10 h-10 text-white bg-yellow-500 p-2 rounded-full shadow cursor-pointer hover:text-red-500 hover:scale-110 transition" 
+                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 
+                           12.28 2 8.5 2 5.42 4.42 3 
+                           7.5 3c1.74 0 3.41 0.81 
+                           4.5 2.09C13.09 3.81 14.76 3 
+                           16.5 3 19.58 3 22 5.42 
+                           22 8.5c0 3.78-3.4 6.86-8.55 
+                           11.54L12 21.35z"/>
+                </svg>
+              </a>
+            {% endif %}
+          {% else %}
+            <a href="{% url 'login' %}">
+              <svg class="w-10 h-10 text-white bg-yellow-500 p-2 rounded-full shadow cursor-pointer hover:text-red-500 hover:scale-110 transition" 
+                   xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 
+                         12.28 2 8.5 2 5.42 4.42 3 
+                         7.5 3c1.74 0 3.41 0.81 
+                         4.5 2.09C13.09 3.81 14.76 3 
+                         16.5 3 19.58 3 22 5.42 
+                         22 8.5c0 3.78-3.4 6.86-8.55 
+                         11.54L12 21.35z"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+        <p class="text-gray-400 italic">No Image</p>
+      {% endif %}
+    </div>
+  </a>
+
+  <!-- Product Info -->
+  <div class="mt-3">
+    <a href="{% url 'product_detail' product.slug %}">
+    <h3 class="text-sm font-semibold text-black truncate hover:text-yellow-500">{{ product.name }}</h3>
+</a>
+    {% if product.brand %}
+    <p class="text-xs text-gray-500">Brand: {{ product.brand }}</p>
+    {% endif %}
+
+    <!-- Price -->
+    <div class="flex items-center gap-2 mt-2">
+      {% if product.discount_percentage %}
+        <span class="text-yellow-500 font-bold">${{ product.get_final_price|floatformat:2 }}</span>
+        <span class="line-through text-gray-400 text-sm">${{ product.price }}</span>
+       
+      {% else %}
+        <span class="text-yellow-500 font-bold">${{ product.price }}</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+    </div>
+</section>
+
+
+{% endblock %}

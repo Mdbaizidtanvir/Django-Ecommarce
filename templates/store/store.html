@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block title %} Store{% endblock %}
+{% block body %}
+
+
+
+<nav class="  hidden md:block lg:block bg-gray-600 text-white py-2 px-1  ">
+  <div class="flex space-x-3">
+  <a href="/">Home</a> / <p>    {% if current_category %}
+        <p>{{ current_category.name }}</p>
+    {% else %}
+        <p>All Products</p>
+    {% endif %}
+</p>
+  </div>
+</nav>
+
+
+<h1 class="mt-1 mb-2 hidden md:block lg:block text-2xl text-left mx-auto container max-w-6xl text-black">    {% if current_category %}
+       {{ current_category.name }}
+    {% else %}
+        All Products
+    {% endif %}
+</h1>
+
+<!-- Mobile Filter Toggle -->
+
+<div class="flex md:hidden container justify-between mt-5 mb-2 px-5 mx-auto ">
+<h1 class="text-2xl">SHOP BY</h1>
+<div class=" flex justify-end mb-4">
+  <button id="filterToggle" class="bg-black text-white px-4 py-2 rounded-lg font-semibold">
+    Filters
+  </button>
+</div>
+</div>
+
+
+<!-- Sidebar Filter -->
+<div id="filterSidebar"
+     class="fixed top-0 md:hidden lg:hidden left-0 h-full overflow-y-scroll overflow-visible w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50 lg:translate-x-0 lg:static lg:h-auto lg:w-64">
+
+  <!-- Close Button Mobile -->
+  <div class="flex justify-between items-center border-b p-4 md:hidden">
+    <h2 class="text-lg font-bold">Filters</h2>
+    <button id="closeSidebar" class="text-gray-600 hover:text-black text-2xl">&times;</button>
+  </div>
+
+  <!-- Filter Content with Scroll -->
+  <div class="p-4 space-y-4 ">
+    <!-- Categories -->
+    <div>
+      <h3 class="text-md font-semibold mb-2 bg-yellow-400 text-black px-2 py-1 rounded">Categories</h3>
+      <ul class="space-y-2">
+        {% for category in categories %}
+        <li>
+          <a href="?category={{ category.id }}"
+             class="block px-3 py-2 rounded hover:bg-yellow-100 text-gray-700">{{ category.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Colors -->
+    <div>
+      <h3 class="text-md font-semibold mb-2 bg-yellow-400 text-black px-2 py-1 rounded">Colors</h3>
+      <div class="flex flex-wrap gap-2">
+        {% for color in colors %}
+        <a href="?color={{ color.name }}"
+           class="px-3 py-1 rounded-full border border-gray-300 hover:bg-yellow-500 hover:text-black transition">
+          {{ color.name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Sizes -->
+    <div>
+      <h3 class="text-md font-semibold mb-2 bg-yellow-400 text-black px-2 py-1 rounded">Sizes</h3>
+      <div class="flex flex-wrap gap-2">
+        {% for size in sizes %}
+        <a href="?size={{ size.name }}"
+           class="px-3 py-1 rounded-md border border-gray-300 hover:bg-yellow-500 hover:text-black transition">
+          {{ size.name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Price Range -->
+    <div>
+      <h3 class="text-md font-semibold mb-2 bg-yellow-400 text-black px-2 py-1 rounded">Price</h3>
+      <div class="flex flex-col space-y-2">
+        <a href="?price_min=0&price_max=999" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳0 - ৳999</a>
+        <a href="?price_min=1000&price_max=1999" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳1,000 - ৳1,999</a>
+        <a href="?price_min=2000&price_max=2999" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳2,000 - ৳2,999</a>
+        <a href="?price_min=3000&price_max=3999" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳3,000 - ৳3,999</a>
+        <a href="?price_min=4000&price_max=4999" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳4,000 - ৳4,999</a>
+        <a href="?price_min=5000&price_max=5999" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳5,000 - ৳5,999</a>
+        <a href="?price_min=6000" class="px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition">৳6,000+</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Overlay Mobile -->
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 lg:hidden"></div>
+
+<!-- Scripts -->
+<script>
+  const filterToggle = document.getElementById("filterToggle");
+  const filterSidebar = document.getElementById("filterSidebar");
+  const closeSidebar = document.getElementById("closeSidebar");
+  const overlay = document.getElementById("overlay");
+
+  filterToggle.addEventListener("click", () => {
+    filterSidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+  });
+
+  closeSidebar.addEventListener("click", () => {
+    filterSidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+  });
+
+  overlay.addEventListener("click", () => {
+    filterSidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+  });
+</script>
+
+
+
+<!-- 🔳 Filter + Products Grid -->
+<div class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+
+  <!-- 🔧 Sidebar -->
+  <aside id="filterSidebar" class="hidden md:block bg-white rounded-xl shadow p-4 space-y-6">
+
+    <!-- Categories -->
+    <div>
+      <h3 class="text-lg font-semibold px-4 py-2 bg-yellow-400 text-black rounded-md">Categories</h3>
+      <div class="flex flex-col divide-y divide-gray-200 max-h-[250px] overflow-y-auto">
+        {% for category in categories %}
+        <a href="{% url 'store' category.slug %}" 
+           class="flex items-center gap-2 px-4 py-3 hover:bg-yellow-100 transition">
+          <img src="{{ category.image.url }}" alt="{{ category.name }}" 
+               class="w-6 h-6 object-cover rounded">
+          <span class="text-sm font-medium">{{ category.name }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Colors -->
+    <div>
+      <h3 class="text-lg font-semibold px-4 py-2 bg-yellow-400 text-black rounded-md">Colors</h3>
+      <div class="flex flex-wrap gap-2 p-3">
+        {% for color in colors %}
+        <a href="?color={{ color.name }}" 
+           class="px-3 py-1 text-sm rounded-full border border-gray-300 hover:bg-yellow-500 hover:text-black transition">
+          {{ color.name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Sizes -->
+    <div>
+      <h3 class="text-lg font-semibold px-4 py-2 bg-yellow-400 text-black rounded-md">Sizes</h3>
+      <div class="flex flex-wrap gap-2 p-3">
+        {% for size in sizes %}
+        <a href="?size={{ size.name }}" 
+           class="px-3 py-1 text-sm rounded-md border border-gray-300 hover:bg-yellow-500 hover:text-black transition">
+          {{ size.name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Price Range -->
+    <div>
+      <h3 class="text-lg font-semibold px-4 py-2 bg-yellow-400 text-black rounded-md">Price Range</h3>
+      <div class="flex flex-col p-3 space-y-2">
+        <a href="?price_min=0&price_max=999" class="filter-btn">৳0 - ৳999</a>
+        <a href="?price_min=1000&price_max=1999" class="filter-btn">৳1,000 - ৳1,999</a>
+        <a href="?price_min=2000&price_max=2999" class="filter-btn">৳2,000 - ৳2,999</a>
+        <a href="?price_min=3000&price_max=3999" class="filter-btn">৳3,000 - ৳3,999</a>
+        <a href="?price_min=4000&price_max=4999" class="filter-btn">৳4,000 - ৳4,999</a>
+        <a href="?price_min=5000&price_max=5999" class="filter-btn">৳5,000 - ৳5,999</a>
+        <a href="?price_min=6000" class="filter-btn">৳6,000+</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 🛒 Product Section -->
+  <main class="md:col-span-3">
+
+    <!-- Header: Store + Sort By -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold">🛍 Store</h2>
+      <div class="flex items-center gap-3">
+        <label for="sort" class="text-sm text-gray-600">Sort by:</label>
+        <form method="get" id="sortForm">
+          <select name="sort" id="sort" class="border rounded-md px-2 py-1 text-sm"
+                  onchange="document.getElementById('sortForm').submit()">
+            <option value="">Default</option>
+            <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+            <option value="name_asc" {% if request.GET.sort == 'name_asc' %}selected{% endif %}>Name: A-Z</option>
+            <option value="name_desc" {% if request.GET.sort == 'name_desc' %}selected{% endif %}>Name: Z-A</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for product in products %}
+<div class="w-full ">
+  <a href="{% url 'product_detail' product.slug %}">
+    <div class="relative group rounded-xl shadow-md overflow-hidden bg-white">
+
+      <!-- Product image -->
+      {% if product.main_image %}
+      <img class="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105" 
+           src="{{ product.main_image.url }}" alt="{{ product.name }}">
+
+      <!-- Discount Badge -->
+      {% if product.discount_percentage %}
+      <div class="absolute top-2 right-2 py-1 px-2 text-xs font-bold text-white bg-red-500 rounded-lg shadow">
+        -{{ product.discount_percentage }}%
+      </div>
+      {% endif %}
+
+      <!-- Overlay Actions -->
+      <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition duration-300 flex items-end justify-center">
+        <div class="flex items-start justify-center space-x-3 py-3  bg-white w-full ">
+          <!-- View Icon -->
+          <a href="{% url 'product_detail' product.slug %}">
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="w-10 h-10 text-white bg-yellow-500 p-2 rounded-full shadow cursor-pointer hover:scale-110 transition" 
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </a>
+
+          <!-- Favorite Icon -->
+          {% if user.is_authenticated %}
+            {% if product.id in favorite_ids %}
+              <a href="{% url 'remove_from_favorites' product.id %}">
+                <svg class="w-10 h-10 text-yellow-500 bg-red-500 p-2 rounded-full shadow cursor-pointer hover:scale-110 transition" 
+                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 
+                           5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 
+                           4.5 2.09C13.09 3.81 14.76 3 16.5 
+                           3 19.58 3 22 5.42 22 8.5c0 
+                           3.78-3.4 6.86-8.55 11.54L12 
+                           21.35z"/>
+                </svg>
+              </a>
+            {% else %}
+              <a href="{% url 'add_to_favorites' product.id %}">
+                <svg class="w-10 h-10 text-white bg-yellow-500 p-2 rounded-full shadow cursor-pointer hover:text-red-500 hover:scale-110 transition" 
+                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 
+                           12.28 2 8.5 2 5.42 4.42 3 
+                           7.5 3c1.74 0 3.41 0.81 
+                           4.5 2.09C13.09 3.81 14.76 3 
+                           16.5 3 19.58 3 22 5.42 
+                           22 8.5c0 3.78-3.4 6.86-8.55 
+                           11.54L12 21.35z"/>
+                </svg>
+              </a>
+            {% endif %}
+          {% else %}
+            <a href="{% url 'login' %}">
+              <svg class="w-10 h-10 text-white bg-yellow-500 p-2 rounded-full shadow cursor-pointer hover:text-red-500 hover:scale-110 transition" 
+                   xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 
+                         12.28 2 8.5 2 5.42 4.42 3 
+                         7.5 3c1.74 0 3.41 0.81 
+                         4.5 2.09C13.09 3.81 14.76 3 
+                         16.5 3 19.58 3 22 5.42 
+                         22 8.5c0 3.78-3.4 6.86-8.55 
+                         11.54L12 21.35z"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+        <p class="text-gray-400 italic">No Image</p>
+      {% endif %}
+    </div>
+  </a>
+
+  <!-- Product Info -->
+  <div class="mt-3">
+    <a href="{% url 'product_detail' product.slug %}">
+    <h3 class="text-sm font-semibold text-black truncate hover:text-yellow-500">{{ product.name }}</h3>
+</a>
+    {% if product.brand %}
+    <p class="text-xs text-gray-500">Brand: {{ product.brand }}</p>
+    {% endif %}
+
+    <!-- Price -->
+    <div class="flex items-center gap-2 mt-2">
+      {% if product.discount_percentage %}
+        <span class="text-yellow-500 font-bold">${{ product.get_final_price|floatformat:2 }}</span>
+        <span class="line-through text-gray-400 text-sm">${{ product.price }}</span>
+       
+      {% else %}
+        <span class="text-yellow-500 font-bold">${{ product.price }}</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+      {% empty %}
+      <p class="text-gray-600 col-span-full">No products found matching your filters.</p>
+      {% endfor %}
+    </section>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-10">
+      <nav class="flex gap-1">
+        {% with querystring=request.GET.urlencode|cut:'page=' %}
+        {% if products.has_previous %}
+          <a href="?page=1{% if querystring %}&{{ querystring }}{% endif %}"
+             class="px-3 py-1 border rounded hover:bg-yellow-100">« First</a>
+          <a href="?page={{ products.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}"
+             class="px-3 py-1 border rounded hover:bg-yellow-100">‹ Prev</a>
+        {% endif %}
+
+        <span class="px-4 py-1 border bg-yellow-400 text-black font-semibold">
+          Page {{ products.number }} of {{ products.paginator.num_pages }}
+        </span>
+
+        {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}"
+             class="px-3 py-1 border rounded hover:bg-yellow-100">Next ›</a>
+          <a href="?page={{ products.paginator.num_pages }}{% if querystring %}&{{ querystring }}{% endif %}"
+             class="px-3 py-1 border rounded hover:bg-yellow-100">Last »</a>
+        {% endif %}
+        {% endwith %}
+      </nav>
+    </div>
+
+  </main>
+</div>
+
+<!-- Small utility class -->
+<style>
+  .filter-btn {
+    @apply text-sm px-3 py-2 rounded-md border hover:bg-yellow-500 hover:text-black transition;
+  }
+</style>
+
+{% endblock %}

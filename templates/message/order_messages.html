@@ -1,0 +1,84 @@
+
+{% extends "base.html" %}
+{% block title %}         Orders Messages{% endblock %}
+
+{% block body %}
+
+<div class="mx-auto max-w-3xl mb-10 h-[20rem] container px-4 mt-6 flex flex-col" style="height: 642px">
+    <!-- Header -->
+    <div class="py-3 px-5 bg-yellow-500 rounded-t-lg text-white font-bold text-lg shadow-md">
+        Order Chat - Order #{{ order.id }}
+    </div>
+<!-- order_messages.html / admin_order_chat.html -->
+<div id="chat-box" class="flex-1 overflow-y-auto px-4 py-3 space-y-3 flex flex-col bg-gray-50 border border-yellow-200 rounded-b-lg shadow-inner">
+  
+  <div class="flex items-center justify-center min-h-[40vh]">
+  <div class="text-center bg-white shadow-lg rounded-2xl p-8 max-w-lg">
+    <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-4">
+      👋 Welcome to Chat for Order #{{ order.id }}
+    </h1>
+    <p class="text-gray-600 text-base md:text-lg leading-relaxed">
+      We will discuss your order here, and our team will respond shortly.
+    </p>
+  </div>
+</div>
+  
+    {% for msg in messages %}
+        <div class="p-3 rounded-xl  max-w-[70%] break-words shadow-sm {% if  msg.is_admin %} bg-blue-200 self-end text-right {% else %}bg-yellow-200 self-start text-left {% endif %}"><b>{{ msg.sender.username }}{% if msg.is_admin %} (Admin){% endif %}:</b> {{ msg.text }}</div>
+    {% endfor %}
+</div>
+ <!-- Input -->
+    <div class="relative mt-3">
+<input type="text" id="chat-message-input"   class="w-full py-3 px-4 border border-yellow-500 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Type a message...">
+<button id="chat-message-send"  class="absolute top-0 right-0 h-full px-5 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-300 shadow">Send</button>
+</div>
+
+</div>
+
+<script>
+    const orderId = "{{ order.id }}";
+    const userName = "{{ request.user.username }}";
+    
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const chatSocket = new WebSocket(
+        protocol + '://' + window.location.host + '/ws/order/' + orderId + '/'
+    );
+
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const chatBox = document.getElementById('chat-box');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add("p-3", "rounded-xl", "max-w-[70%]", "break-words", "shadow-sm");
+
+
+        if (data.is_admin) {
+            newMessage.classList.add("bg-blue-200", "self-end", "text-right");
+            newMessage.innerHTML = `<span class="font-semibold">${data.sender}${data.is_admin ? ' (Admin)' : ''}:</span> ${data.message}   <span class="text-xs text-gray-500 ml-2">${data.timestamp}</span>`;
+
+        } else {
+            newMessage.classList.add("bg-yellow-200", "self-start", "text-left");
+            newMessage.innerHTML = `<span class="font-semibold">${data.sender}${data.is_admin ? ' (Admin)' : ''}:</span> ${data.message} <span class="text-xs text-gray-500 ml-2">${data.timestamp}</span>`;
+
+        }
+        
+        chatBox.appendChild(newMessage);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.getElementById('chat-message-send').onclick = function(e) {
+        const messageInputDom = document.getElementById('chat-message-input');
+        const message = messageInputDom.value;
+        if (message.trim() !== '') {
+            chatSocket.send(JSON.stringify({'message': message}));
+            messageInputDom.value = '';
+        }
+    };
+</script>
+
+
+{% endblock %}

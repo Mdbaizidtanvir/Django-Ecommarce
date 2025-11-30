@@ -1,0 +1,294 @@
+
+    
+   <header class="shadow-md  text-white w-full">
+  <!-- Top notice bar -->
+  <div class="flex flex-col md:flex-row items-center justify-between bg-yellow-400 px-4 py-2 text-sm space-y-2 md:space-y-0">
+    <p class="text-gray-900 font-medium">
+      Please call us to check the stock before placing the order!
+    </p>
+    <div class="flex flex-wrap items-center space-x-4 text-gray-900">
+      <span>Call: {{ settings.phone }}</span>
+      <a href="{{ settings.facebook }}" target="_blank" rel="nofollow noopener" class="hover:underline">
+        FB Page
+      </a>
+      <a href="{{ settings.wahtsapp }}" target="_blank" rel="nofollow noopener" class="hover:underline">
+        WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- Main header -->
+  <div class="container bg-gray-900 mx-auto flex flex-row md:flex-row justify-between items-center px-6 py-4 space-y-4 md:space-y-0">
+    
+    <!-- Logo -->
+    <a href="/" class="flex items-center space-x-2">
+      <img src="{{ settings.get_logo }}" alt="{{ settings.site_name }}" class="w-auto h-10">
+    </a>
+
+    <!-- Search bar -->
+   <form action="{% url 'store' %}" method="get" id="searchForm" class="md:block lg:block sm:block hidden relative w-full md:w-2/3 lg:w-1/2">
+  <input
+    type="text"
+    name="search"
+    id="searchInput"
+    placeholder="I'm looking for..."
+    autocomplete="off"
+    class="w-full px-6 py-2 rounded-full border-2 border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-black text-lg transition"
+    value="{{ selected.search }}"
+  >
+  <button type="submit"
+    class="absolute top-0 right-0 h-full -translate-y-1/2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 rounded-full transition">
+    Search
+  </button>
+
+  <!-- Auto-suggest dropdown -->
+  <div id="suggestions" class="absolute top-full left-0 w-full bg-white shadow-md rounded-b hidden z-50"></div>
+</form>
+
+
+    <!-- User actions / cart -->
+    <div class="flex items-center space-x-5">
+      <!-- Cart -->
+      <a href="{% url 'view_cart' %}" class="relative">
+        <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21,7H7.462L5.91,3.586C5.748,3.229,5.392,3,5,3H2v2h2.356L9.09,15.414C9.252,15.771,9.608,16,10,16h8
+            c0.4,0,0.762-0.238,0.919-0.606l3-7c0.133-0.309,0.101-0.663-0.084-0.944C21.649,7.169,21.336,7,21,7z M17.341,14h-6.697L8.371,9
+            h11.112L17.341,14z"/>
+          <circle cx="10.5" cy="18.5" r="1.5"/>
+          <circle cx="17.5" cy="18.5" r="1.5"/>
+        </svg>
+        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">{{ request.session.cart|length|default:"0" }}</span>
+      </a>
+
+      <!-- Sign In / User Menu -->
+      {% if request.user.is_authenticated %}
+   
+
+<div class="relative inline-block text-left">
+  <button id="userMenuButton" type="button"
+    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 text-white hover:bg-gray-200 focus:outline-none"
+    aria-expanded="true" aria-haspopup="true">
+    <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg"
+      width="24" height="24" viewBox="0 0 24 24">
+      <circle fill="none" cx="12" cy="7" r="3" />
+      <path
+        d="M12 2C9.243 2 7 4.243 7 7s2.243 5 5 5 5-2.243 5-5S14.757 2 12 2zM12 10c-1.654 0-3-1.346-3-3s1.346-3 
+        3-3 3 1.346 3 3S13.654 10 12 10zM21 21v-1c0-3.859-3.141-7-7-7h-4c-3.86 
+        0-7 3.141-7 7v1h2v-1c0-2.757 2.243-5 5-5h4c2.757 0 5 2.243 5 
+        5v1H21z" />
+    </svg>
+  </button>
+
+  <!-- ✅ Dropdown content -->
+  <div id="userDropdown" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+    <div class="py-1 text-sm text-gray-700">
+        
+
+
+      <a href="{% url 'orders' %}" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
+
+      <a href="{% url 'favorites' %}" class="block px-4 py-2 hover:bg-gray-100">Favorites</a>
+
+      <a href="{% url 'return_requests' %}" class="block px-4 py-2 hover:bg-gray-100">My Returns</a>
+      
+
+      <form action="{% url 'logout' %}" method="post" class="inline">
+  {% csrf_token %}
+        <button type="submit" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">Logout</button>
+</form>
+
+
+
+    </div>
+  </div>
+</div>
+
+      {% else %}
+      <div class=" md:flex space-x-2 md:space-x-3">
+        <a href="{% url 'login' %}" class="md:px-4 px-2 py-1 text[10px] md:py-2 border border-gray-700 rounded-lg hover:bg-gray-800">Sign In</a>
+        <a href="{% url 'register' %}" class="md:px-4 py-1 px-2 md:py-2 text[10px]  bg-yellow-500 text-black rounded-lg hover:bg-yellow-600">Sign Up</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+
+  <!-- Search bar -->
+   <form action="{% url 'store' %}" method="get" id="searchForm1" class="md:hidden mt-3 mb-3 px-4 lg:hidden sm:hidden relative w-full md:w-2/3 lg:w-1/2">
+  <input
+    type="text"
+    name="search"
+    id="searchInput1"
+    placeholder="I'm looking for..."
+    autocomplete="off"
+    class="w-full px-6 py-2 rounded-full border-2 border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-black text-lg transition"
+    value="{{ selected.search }}"
+  >
+  <button type="submit"
+    class="absolute top-0 right-0 h-full -translate-y-1/2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 rounded-full transition">
+    Search
+  </button>
+
+  <!-- Auto-suggest dropdown -->
+  <div id="suggestions1" class="absolute top-full left-0 w-full bg-white shadow-md rounded-b hidden z-50"></div>
+</form>
+
+</header>
+
+    
+<script>
+  const button = document.getElementById('userMenuButton');
+  const dropdown = document.getElementById('userDropdown');
+
+  button.addEventListener('click', () => {
+    dropdown.classList.toggle('hidden');
+  });
+
+  // Optional: Hide dropdown when clicking outside
+  document.addEventListener('click', function (event) {
+    const isClickInside = button.contains(event.target) || dropdown.contains(event.target);
+    if (!isClickInside) {
+      dropdown.classList.add('hidden');
+    }
+  });
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("searchInput");
+  const suggestions = document.getElementById("suggestions");
+  const searchForm = document.getElementById("searchForm");
+
+  let debounceTimeout;
+
+  searchInput.addEventListener("input", function() {
+    const query = this.value;
+
+    clearTimeout(debounceTimeout);
+    if (!query) {
+      suggestions.classList.add("hidden");
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    debounceTimeout = setTimeout(() => {
+      fetch(`/search_suggestions/?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          suggestions.innerHTML = "";
+          if (data.length > 0) {
+            data.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "flex items-center gap-3 px-4 py-2 hover:bg-yellow-500 text-gray-900 hover:text-black cursor-pointer transition";
+
+              // thumbnail
+              if (item.image) {
+                const img = document.createElement("img");
+                img.src = item.image;
+                img.alt = item.name;
+                img.className = "w-10 h-10 object-cover rounded-md";
+                div.appendChild(img);
+              }
+
+              // name
+              const span = document.createElement("span");
+              span.textContent = item.name;
+              div.appendChild(span);
+
+              // on click fill input + submit
+              div.addEventListener("click", () => {
+                searchInput.value = item.name;
+                searchForm.submit();
+              });
+
+              suggestions.appendChild(div);
+            });
+            suggestions.classList.remove("hidden");
+          } else {
+            suggestions.classList.add("hidden");
+          }
+        });
+    }, 300); // debounce
+  });
+
+  // hide on outside click
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+      suggestions.classList.add("hidden");
+    }
+  });
+});
+</script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("searchInput1");
+  const suggestions = document.getElementById("suggestions1");
+  const searchForm = document.getElementById("searchForm1");
+
+  let debounceTimeout;
+
+  searchInput.addEventListener("input", function() {
+    const query = this.value;
+
+    clearTimeout(debounceTimeout);
+    if (!query) {
+      suggestions.classList.add("hidden");
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    debounceTimeout = setTimeout(() => {
+      fetch(`/search_suggestions/?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          suggestions.innerHTML = "";
+          if (data.length > 0) {
+            data.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "flex items-center gap-3 px-4 py-2 hover:bg-yellow-500 text-gray-900 hover:text-black cursor-pointer transition";
+
+              // thumbnail
+              if (item.image) {
+                const img = document.createElement("img");
+                img.src = item.image;
+                img.alt = item.name;
+                img.className = "w-10 h-10 object-cover rounded-md";
+                div.appendChild(img);
+              }
+
+              // name
+              const span = document.createElement("span");
+              span.textContent = item.name;
+              div.appendChild(span);
+
+              // on click fill input + submit
+              div.addEventListener("click", () => {
+                searchInput.value = item.name;
+                searchForm.submit();
+              });
+
+              suggestions.appendChild(div);
+            });
+            suggestions.classList.remove("hidden");
+          } else {
+            suggestions.classList.add("hidden");
+          }
+        });
+    }, 300); // debounce
+  });
+
+  // hide on outside click
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+      suggestions.classList.add("hidden");
+    }
+  });
+});
+</script>
+
+

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Your Cart{% endblock %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto p-4 sm:p-6">
+  <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-yellow-600">🛒 Your Shopping Cart</h2>
+
+  {% if cart_items %}
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+    <!-- Items -->
+    <div class="lg:col-span-2 space-y-4">
+      {% for product_id, item in cart_items %}
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white rounded-2xl shadow-sm p-4 sm:p-6 hover:shadow-md transition">
+        <!-- Product -->
+        <div class="flex items-start sm:items-center gap-4 w-full sm:w-auto">
+          <img src="{{ item.image }}" alt="{{ item.name }}" class="w-24 h-24 sm:w-20 sm:h-20 object-cover rounded-lg border">
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm sm:text-[13px] font-semibold truncate w-80">{{ item.name }}</h3>
+
+            <!-- Prices -->
+  <div class="flex items-center gap-2 mt-1 flex-wrap">
+  <span class="text-lg font-bold text-black">৳{{ item.price|floatformat:2 }}</span>
+  {% if item.original_price|floatformat:2 > item.price|floatformat:2 %}
+  <span class="line-through text-gray-400 text-sm">৳{{ item.original_price|floatformat:2 }}</span>
+  <span class="text-xs px-2 py-1 rounded bg-yellow-300 text-black font-semibold">-{{ item.offer }}%</span>
+  {% endif %}
+</div>
+
+
+            <!-- Variants -->
+            <p class="text-gray-500 text-xs sm:text-sm mt-1">
+              {% if item.size %}Size: {{ item.size }}{% endif %}
+              {% if item.size and item.color %} | {% endif %}
+              {% if item.color %}Color: {{ item.color }}{% endif %}
+            </p>
+          </div>
+        </div>
+
+        <!-- Qty + Remove -->
+        <div class="flex items-center gap-2 mt-3  sm:mt-0 flex-wrap">
+          <form action="{% url 'update_cart' product_id %}" method="post" class="flex items-center gap-1 sm:gap-2">
+            {% csrf_token %}
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                   class="w-14 sm:w-16 text-center border border-yellow-500 rounded-lg text-black font-bold">
+            <button type="submit" class="px-3 py-1 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition font-semibold">
+              Update
+            </button>
+          </form>
+
+          <a href="{% url 'remove_from_cart' product_id %}" 
+             class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm">
+            Remove
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Summary -->
+    <div class="bg-gray-50 p-4 sm:p-6 rounded-2xl shadow-sm h-fit">
+      <h3 class="text-lg sm:text-xl font-semibold mb-4 text-yellow-600">Order Summary</h3>
+      <div class="flex justify-between mb-2 text-sm sm:text-base">
+        <span>Subtotal</span>
+        <span>৳{{ subtotal|floatformat:2 }}</span>
+      </div>
+      <div class="flex justify-between mb-2 text-sm sm:text-base">
+        <span>Shiping Free</span>
+        <span>৳{{ tax|floatformat:2 }}</span>
+      </div>
+<div class="flex justify-between font-semibold text-lg border-t pt-2">
+  <span>Total</span>
+  <span>৳{{ total|floatformat:2 }}</span>
+</div>
+
+<form method="post" action="{% url 'apply_discount_code' %}" class="flex gap-2 mt-4">
+  {% csrf_token %}
+  <input type="text" name="discount_code" placeholder="Enter discount code" 
+         class="flex-1 border border-gray-300 rounded-lg px-3 py-2">
+  <button type="submit" class="bg-yellow-500 text-black px-4 py-2 rounded-lg hover:bg-yellow-600">
+    Apply
+  </button>
+</form>
+
+{% if cart.discount %}
+<p class="mt-2 text-green-600 font-semibold">Discount applied: {{ cart.discount }}%</p>
+{% endif %}
+
+      <p class="text-green-600 font-semibold text-sm mt-2">
+  You saved ${{ total_savings|floatformat:2 }} on this order!
+</p>
+
+      <p class="text-green-700 font-semibold mt-4 mb-4 text-sm sm:text-base">💵 Cash on Delivery - Trusted & Secure</p>
+      <a href="{% url 'checkout_info' %}" 
+         class="mt-2 block w-full text-center bg-yellow-500 text-black py-3 rounded-2xl hover:bg-yellow-600 transition font-bold">
+        Proceed to Cash on Delivery
+      </a>
+    </div>
+  </div>
+  {% else %}
+  <div class="bg-yellow-50 text-yellow-700 p-6 rounded-xl text-center shadow">
+    <p class="text-lg font-semibold">Your cart is empty 🛒</p>
+    <a href="{% url 'store' %}" class="mt-4 inline-block px-5 py-2 bg-yellow-500 text-black rounded-xl hover:bg-yellow-600 transition font-bold">
+      Continue Shopping
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

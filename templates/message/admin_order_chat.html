@@ -1,0 +1,35 @@
+
+{% extends "base.html" %}
+{% block title %}         Orders Messages{% endblock %}
+{% block body %}
+
+<div class="mx-auto max-w-3xl container px-4 mt-6 flex flex-col h-[642px]">
+    <!-- Header -->
+    <div class="py-3 px-5 bg-yellow-500 rounded-t-lg text-white font-bold text-lg shadow-md">
+        Orders Messages
+    </div>
+
+    <!-- Body -->
+    <div class="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-gray-50 border border-yellow-200 rounded-b-lg shadow-inner">
+        {% if orders %}
+            {% for order in orders %}
+                <div class="flex items-center justify-between bg-white border border-yellow-500 px-4 py-3 rounded-lg shadow hover:bg-yellow-50 transition">
+                    <div class="font-semibold text-gray-700">
+                        Order #{{ order.id }}
+                    </div>
+                    <a href="{% url 'order_messages' order.id %}" 
+                       class="text-sm font-medium text-white py-2 px-3 rounded-full bg-yellow-500 ">
+                       View Messages
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center text-gray-500 py-8">
+                No paid orders with messages yet.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}

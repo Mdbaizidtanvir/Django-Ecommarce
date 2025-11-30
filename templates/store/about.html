@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+
+{% block body %}
+
+
+  <!-- About Section -->
+  <section class="py-16 px-4 max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-6">About Us</h1>
+    <p class="text-lg mb-4">
+      Welcome to <strong>BUJUX</strong> — +8801321284815 one source for all things fashion. We're dedicated to giving you the very best of apparel, with a focus on quality, customer service, and uniqueness.
+    </p>
+    <p class="text-lg mb-4">
+      Founded in 2023 by mdbaizidtanvir, BUJUX has come a long way from its beginnings. When we first started out, our passion for eco-friendly clothing drove us to start our own business.
+    </p>
+    <p class="text-lg mb-4">
+      We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don't hesitate to contact us.
+    </p>
+    <p class="text-lg">Sincerely,<br><strong>The BUJUX Team</strong></p>
+  </section>
+
+
+
+<br/>
+
+
+<section class="bg-white py-12 px-4">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-2">Stay in the loop</h2>
+    <p class="text-gray-500 mb-6 text-sm sm:text-base">
+      Subscribe to get updates on new arrivals, exclusive offers, and insider style tips.
+    </p>
+    <form  action="{% url 'subscribe_newsletter' %}"  class="flex flex-col sm:flex-row items-center gap-4">
+      <input 
+       type="email" name="email" required
+
+        placeholder="Enter your email"
+        class="w-full sm:flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black transition duration-200"
+      />
+      <button 
+        type="submit" 
+        class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition duration-200"
+      >
+        Subscribe
+      </button>
+    </form>
+  </div>
+</section>
+
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+{% endblock %}
